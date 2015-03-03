@@ -46,7 +46,7 @@
 { return _users.count; }
 
 //esconder barra de status
--(BOOL) prefersStatusBarHidden { return YES; }
+//-(BOOL) prefersStatusBarHidden { return YES; }
 
 //==============================================================================
 
