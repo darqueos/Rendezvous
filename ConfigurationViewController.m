@@ -33,7 +33,7 @@
     [_locationManager setHeadingFilter:kCLHeadingFilterNone];
     [_locationManager startUpdatingHeading];
 
-    _beaconRegion = [CLBeaconRegion alloc] initWithProximityUUID: identifier:];
+//    _beaconRegion = [CLBeaconRegion alloc] initWithProximityUUID: identifier:];
 
     // Region
 }
