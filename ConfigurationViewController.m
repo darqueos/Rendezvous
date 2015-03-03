@@ -32,6 +32,12 @@
     // Orientation
     [_locationManager setHeadingFilter:kCLHeadingFilterNone];
     [_locationManager startUpdatingHeading];
+    
+    // Map Options
+    [_mapView setZoomEnabled:NO];               // Disable Zoom
+    [_mapView setUserInteractionEnabled:NO];    // Disable User Interaction
+    [_mapView setShowsUserLocation:YES];        // Show user on map
+    
 
 //    _beaconRegion = [CLBeaconRegion alloc] initWithProximityUUID: identifier:];
 
@@ -42,6 +48,18 @@
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
+    // Get user's current location
+    CLLocationCoordinate2D loc  = [[locations lastObject] coordinate];
+    MKCoordinateRegion region   = MKCoordinateRegionMakeWithDistance(loc, 80, 80);
+
+    // Set the initial region on map as user current location
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [_mapView setRegion:region animated:NO];
+    });
 }
 
 /*

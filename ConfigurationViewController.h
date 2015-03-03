@@ -12,6 +12,8 @@
 
 @interface ConfigurationViewController : UIViewController <CLLocationManagerDelegate, MKMapViewDelegate>
 
+@property (weak, nonatomic) IBOutlet MKMapView *mapView;
+
 @property (retain, nonatomic) CLBeaconRegion *beaconRegion;
 @property (retain, nonatomic) CLLocationManager *locationManager;
 
