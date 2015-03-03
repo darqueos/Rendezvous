@@ -15,15 +15,33 @@
 @implementation ConfigurationViewController
 
 - (void)viewDidLoad {
+    // Shows message when the user refuses to allow app permissions.
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+
+    _locationManager = [[CLLocationManager alloc] init];
+
+    [_locationManager requestAlwaysAuthorization];
+    [_locationManager setDelegate:self];
+
+    // Coordinates
+    [_locationManager setActivityType:CLActivityTypeFitness];
+    [_locationManager setDesiredAccuracy:kCLLocationAccuracyBest];
+    [_locationManager setDistanceFilter:kCLHeadingFilterNone];
+    [_locationManager startUpdatingLocation];
+
+    // Orientation
+    [_locationManager setHeadingFilter:kCLHeadingFilterNone];
+    [_locationManager startUpdatingHeading];
+
+    _beaconRegion = [CLBeaconRegion alloc] initWithProximityUUID: identifier:];
+
+    // Region
 }
 
 -(BOOL) prefersStatusBarHidden { return YES; }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 /*
