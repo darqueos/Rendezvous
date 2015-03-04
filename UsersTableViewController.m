@@ -21,9 +21,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    _users = @[@"Aleph Retamal", @"Caue Alves", @"Eduardo Quadros"];
-    _numbers = @[@"(11)99973-7772", @"(11)96089-1415", @"(11)96318-2002"];
-    _photos = @[@"aleph.jpg", @"caue.jpg", @"eduardo.jpg"];
+    _users = [[NSMutableArray alloc]init];
+    
+    [_users addObject:@{@"nome" : @"Aleph", @"foto" : @"aleph.jpg"}];
+    [_users addObject:@{@"nome" : @"Caue", @"foto" : @"caue.jpg"}];
+    [_users addObject:@{@"nome" : @"Eduardo", @"foto" : @"eduardo.jpg"}];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -58,8 +60,9 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"userCell" forIndexPath:indexPath];
     
-    //nomes
-    cell.textLabel.text = _users[indexPath.row];
+    // carregar contatos com fotos
+    cell.textLabel.text = [[_users objectAtIndex:indexPath.row]objectForKey:@"nome"];
+    cell.imageView.image = [UIImage imageNamed:[[_users objectAtIndex:indexPath.row]objectForKey:@"foto"]];
     
     return cell;
 }
