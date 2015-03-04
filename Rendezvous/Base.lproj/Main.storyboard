@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="v3U-VT-17y">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14D87h" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="v3U-VT-17y">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Contatos-->
@@ -60,7 +59,7 @@
             </objects>
             <point key="canvasLocation" x="2013" y="1058"/>
         </scene>
-        <!--Configurar Localização-->
+        <!--Localização-->
         <scene sceneID="l6c-fK-0Ok">
             <objects>
                 <viewController id="4Fq-vJ-kGC" customClass="ConfigurationViewController" sceneMemberID="viewController">
@@ -72,22 +71,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6m3-uB-ADP">
-                                <rect key="frame" x="0.0" y="300" width="600" height="300"/>
-                                <subviews>
-                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="d0i-sb-fc6">
-                                        <rect key="frame" x="-16" y="8" width="632" height="300"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                    </view>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="yZi-i8-ImW">
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="300" id="2tz-9b-hD9"/>
-                                    <constraint firstAttribute="width" constant="600" id="sy2-Ym-7V2"/>
+                                    <constraint firstAttribute="height" id="00E-C2-b2m"/>
+                                    <constraint firstAttribute="width" id="Ei1-eQ-FKr"/>
                                 </constraints>
-                            </view>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="yZi-i8-ImW">
-                                <rect key="frame" x="0.0" y="64" width="600" height="236"/>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="00E-C2-b2m"/>
+                                        <exclude reference="Ei1-eQ-FKr"/>
+                                    </mask>
+                                </variation>
                                 <connections>
                                     <outlet property="delegate" destination="4Fq-vJ-kGC" id="xsE-So-9C7"/>
                                 </connections>
@@ -95,19 +89,12 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Y5t-93-LF9" firstAttribute="top" secondItem="6m3-uB-ADP" secondAttribute="bottom" id="7qM-OP-eEo"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="yZi-i8-ImW" secondAttribute="trailing" constant="-16" id="LIR-Te-mwj"/>
-                            <constraint firstItem="yZi-i8-ImW" firstAttribute="top" secondItem="vKf-gR-7Ai" secondAttribute="bottom" id="VmF-Ou-UE9"/>
-                            <constraint firstAttribute="centerX" secondItem="6m3-uB-ADP" secondAttribute="centerX" id="XQx-iY-Eop"/>
-                            <constraint firstItem="6m3-uB-ADP" firstAttribute="top" secondItem="yZi-i8-ImW" secondAttribute="bottom" id="cab-t1-xap"/>
-                            <constraint firstItem="yZi-i8-ImW" firstAttribute="leading" secondItem="eml-e4-Mcb" secondAttribute="leadingMargin" constant="-16" id="ijQ-pa-kG3"/>
+                            <constraint firstAttribute="centerY" secondItem="yZi-i8-ImW" secondAttribute="centerY" id="bMG-0a-7f8"/>
+                            <constraint firstAttribute="centerX" secondItem="yZi-i8-ImW" secondAttribute="centerX" id="rl0-gj-hAg"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Configurar Localização" id="I2B-kG-6Uf">
-                        <barButtonItem key="rightBarButtonItem" title="Enviar" id="gSK-OO-X0l"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Localização" id="I2B-kG-6Uf"/>
                     <connections>
-                        <outlet property="configView" destination="d0i-sb-fc6" id="Do8-xP-g6C"/>
                         <outlet property="mapView" destination="yZi-i8-ImW" id="bAe-ed-zea"/>
                     </connections>
                 </viewController>

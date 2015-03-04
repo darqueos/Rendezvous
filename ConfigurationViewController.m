@@ -19,6 +19,7 @@
     [super viewDidLoad];
 
     _locationManager = [[CLLocationManager alloc] init];
+    _heading         = [[CLHeading alloc] init];
 
     [_locationManager requestAlwaysAuthorization];
     [_locationManager setDelegate:self];
@@ -37,18 +38,17 @@
     [_mapView setZoomEnabled:NO];               // Disable Zoom
     [_mapView setUserInteractionEnabled:NO];    // Disable User Interaction
     [_mapView setShowsUserLocation:YES];        // Show user on map
-    
-
-//    _beaconRegion = [CLBeaconRegion alloc] initWithProximityUUID: identifier:];
-
-    // Region
 }
 
--(BOOL) prefersStatusBarHidden { return YES; }
+-(BOOL) prefersStatusBarHidden {
+    return YES;
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
+
+#pragma mark Updating Coordinates
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     // Get user's current location
@@ -60,6 +60,22 @@
     dispatch_once(&onceToken, ^{
         [_mapView setRegion:region animated:NO];
     });
+}
+
+#pragma mark Updating Orientation
+
+- (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager {
+    return YES;
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
+    CLLocationDirection direction;
+
+    if (newHeading.headingAccuracy > 0) {
+        direction = newHeading.trueHeading;
+    } else {
+        direction = newHeading.magneticHeading;
+    }
 }
 
 /*
