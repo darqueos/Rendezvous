@@ -33,7 +33,7 @@
     [_locationManager startUpdatingHeading];
     
     // Map Options
-    [_mapView setDelegate:self];
+//    [_mapView setDelegate:self];
     [_mapView setZoomEnabled:NO];               // Disable Zoom
     [_mapView setScrollEnabled:NO];             // Disable scrolling.
     [_mapView setPitchEnabled:NO];              // Disable 3D view of the map.
@@ -57,14 +57,13 @@
     CLLocationCoordinate2D loc  = [[locations lastObject] coordinate];
     MKCoordinateRegion region   = MKCoordinateRegionMakeWithDistance(loc, 80, 80);
 
-    //    MKMapCamera *camera = [MKMapCamera cameraLookingAtCenterCoordinate:loc fromEyeCoordinate:<#(CLLocationCoordinate2D)#> eyeAltitude:<#(CLLocationDistance)#>;
-
     // Set the initial region on map as user current location
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         [_mapView setRegion:region animated:NO];
-        [_mapView setCamera:camera];
     });
+
+    [self updateMap:loc];
 }
 
 #pragma mark Updating Orientation
@@ -73,17 +72,15 @@
     return YES;
 }
 
-- (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
-    CLLocationDirection direction;
+- (void)updateMap:(CLLocationCoordinate2D)loc {
+    _camera = [MKMapCamera cameraLookingAtCenterCoordinate:loc fromEyeCoordinate:loc eyeAltitude:50];
+    _camera.centerCoordinate = loc;
 
-    if (newHeading.headingAccuracy > 0) {
-        direction = newHeading.trueHeading;
-    } else {
-        direction = newHeading.magneticHeading;
-    }
+    _mapView.userTrackingMode = MKUserTrackingModeFollowWithHeading;
+    [_mapView setCamera:_camera animated:YES];
+//  [_mapView setCenterCoordinate:coordinate animated:YES];
+//  [_mapView setRegion:region animated:YES];
 }
-
-- (void)updateMap:(CLLocation *)
 
 /*
 #pragma mark - Navigation
