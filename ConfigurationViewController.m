@@ -19,8 +19,6 @@
     [super viewDidLoad];
 
     _locationManager = [[CLLocationManager alloc] init];
-    _heading         = [[CLHeading alloc] init];
-
     [_locationManager requestAlwaysAuthorization];
     [_locationManager setDelegate:self];
 
@@ -35,7 +33,11 @@
     [_locationManager startUpdatingHeading];
     
     // Map Options
+    [_mapView setDelegate:self];
     [_mapView setZoomEnabled:NO];               // Disable Zoom
+    [_mapView setScrollEnabled:NO];             // Disable scrolling.
+    [_mapView setPitchEnabled:NO];              // Disable 3D view of the map.
+    [_mapView setRotateEnabled:YES];            // Enable map rotation.
     [_mapView setUserInteractionEnabled:NO];    // Disable User Interaction
     [_mapView setShowsUserLocation:YES];        // Show user on map
 }
@@ -55,10 +57,13 @@
     CLLocationCoordinate2D loc  = [[locations lastObject] coordinate];
     MKCoordinateRegion region   = MKCoordinateRegionMakeWithDistance(loc, 80, 80);
 
+    //    MKMapCamera *camera = [MKMapCamera cameraLookingAtCenterCoordinate:loc fromEyeCoordinate:<#(CLLocationCoordinate2D)#> eyeAltitude:<#(CLLocationDistance)#>;
+
     // Set the initial region on map as user current location
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         [_mapView setRegion:region animated:NO];
+        [_mapView setCamera:camera];
     });
 }
 
@@ -77,6 +82,8 @@
         direction = newHeading.magneticHeading;
     }
 }
+
+- (void)updateMap:(CLLocation *)
 
 /*
 #pragma mark - Navigation
