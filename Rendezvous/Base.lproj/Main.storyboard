@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14D87h" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="v3U-VT-17y">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="v3U-VT-17y">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Contatos-->
@@ -28,13 +29,7 @@
                             <outlet property="delegate" destination="ifE-nS-HgB" id="gTX-wR-rSj"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Contatos" id="ZIO-qe-MIv">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Gum-rw-Mjg">
-                            <connections>
-                                <segue destination="Dy1-DL-WLz" kind="show" id="xid-hI-Mb4"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Contatos" id="ZIO-qe-MIv"/>
                     <connections>
                         <outlet property="usersTableView" destination="5UA-JS-9kh" id="FWx-xP-728"/>
                     </connections>
@@ -42,25 +37,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LWF-hr-6nT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2013" y="345"/>
-        </scene>
-        <!--Adicionar Contato-->
-        <scene sceneID="LIQ-am-9d1">
-            <objects>
-                <viewController id="Dy1-DL-WLz" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="LdD-yK-n3Y"/>
-                        <viewControllerLayoutGuide type="bottom" id="qBh-nA-OkV"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="JyH-PU-n9T">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <navigationItem key="navigationItem" title="Adicionar Contato" id="ZEe-me-dGE"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Tyv-dS-YTB" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2013" y="1058"/>
         </scene>
         <!--Localização-->
         <scene sceneID="l6c-fK-0Ok">
@@ -74,7 +50,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="yZi-i8-ImW">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="yZi-i8-ImW">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <constraints>
                                     <constraint firstAttribute="height" id="00E-C2-b2m"/>
                                     <constraint firstAttribute="width" id="Ei1-eQ-FKr"/>
@@ -92,8 +69,10 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstAttribute="centerY" secondItem="yZi-i8-ImW" secondAttribute="centerY" id="bMG-0a-7f8"/>
-                            <constraint firstAttribute="centerX" secondItem="yZi-i8-ImW" secondAttribute="centerX" id="rl0-gj-hAg"/>
+                            <constraint firstItem="yZi-i8-ImW" firstAttribute="top" secondItem="eml-e4-Mcb" secondAttribute="topMargin" id="BSs-cp-sNM"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="yZi-i8-ImW" secondAttribute="trailing" constant="-16" id="RVQ-JB-VXR"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="yZi-i8-ImW" secondAttribute="bottom" id="cc7-GE-t0a"/>
+                            <constraint firstItem="yZi-i8-ImW" firstAttribute="leading" secondItem="eml-e4-Mcb" secondAttribute="leadingMargin" constant="-16" id="uip-Jj-9ZO"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Localização" id="I2B-kG-6Uf"/>
