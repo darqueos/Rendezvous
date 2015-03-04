@@ -10,8 +10,8 @@
 
 @interface UsersTableViewController : UITableViewController
 
-@property NSArray *users;
-@property NSArray *numbers;
-@property NSArray *photos;
+@property NSMutableArray *users;
+
+@property (strong, nonatomic) IBOutlet UITableView *usersTableView;
 
 @end
