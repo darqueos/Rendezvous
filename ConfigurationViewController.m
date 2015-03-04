@@ -63,7 +63,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         [_mapView setRegion:region animated:NO];
-        [_mapView setCamera:camera];
+//        [_mapView setCamera:camera];
     });
 }
 
@@ -83,7 +83,7 @@
     }
 }
 
-- (void)updateMap:(CLLocation *)
+//- (void)updateMap:(CLLocation *) {}
 
 /*
 #pragma mark - Navigation
