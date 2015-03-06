@@ -18,7 +18,9 @@
     // Shows message when the user refuses to allow app permissions.
     [super viewDidLoad];
 
+    _camera = [MKMapCamera camera];
     _locationManager = [[CLLocationManager alloc] init];
+
     [_locationManager requestAlwaysAuthorization];
     [_locationManager setDelegate:self];
 
@@ -33,18 +35,19 @@
     [_locationManager startUpdatingHeading];
     
     // Map Options
-//    [_mapView setDelegate:self];
+    [_mapView setDelegate:self];
     [_mapView setZoomEnabled:NO];               // Disable Zoom
     [_mapView setScrollEnabled:NO];             // Disable scrolling.
-    [_mapView setPitchEnabled:NO];              // Disable 3D view of the map.
-    [_mapView setRotateEnabled:YES];            // Enable map rotation.
     [_mapView setUserInteractionEnabled:NO];    // Disable User Interaction
+    [_mapView setRotateEnabled:YES];            // Enable map rotation.
     [_mapView setShowsUserLocation:YES];        // Show user on map
 }
 
+/*
 -(BOOL) prefersStatusBarHidden {
     return YES;
 }
+*/
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -53,33 +56,27 @@
 #pragma mark Updating Coordinates
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
-    // Get user's current location
     CLLocationCoordinate2D loc  = [[locations lastObject] coordinate];
-    MKCoordinateRegion region   = MKCoordinateRegionMakeWithDistance(loc, 80, 80);
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(loc, 80, 80);
+    [_camera setCenterCoordinate:loc];
+    [_camera setAltitude:100];
 
-    // Set the initial region on map as user current location
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        [_mapView setRegion:region animated:NO];
-    });
-
-    [self updateMap:loc];
+//    [_mapView setRegion:region animated:YES];
+    [_mapView setCamera:_camera animated:YES];
 }
 
-#pragma mark Updating Orientation
+#pragma mark Updating Direction
 
 - (BOOL)locationManagerShouldDisplayHeadingCalibration:(CLLocationManager *)manager {
     return YES;
 }
 
-- (void)updateMap:(CLLocationCoordinate2D)loc {
-    _camera = [MKMapCamera cameraLookingAtCenterCoordinate:loc fromEyeCoordinate:loc eyeAltitude:50];
-    _camera.centerCoordinate = loc;
-
-    _mapView.userTrackingMode = MKUserTrackingModeFollowWithHeading;
-    [_mapView setCamera:_camera animated:YES];
-//  [_mapView setCenterCoordinate:coordinate animated:YES];
-//  [_mapView setRegion:region animated:YES];
+- (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
+    if (newHeading.headingAccuracy > 0) {
+        [_camera setHeading:newHeading.trueHeading];
+    } else {
+        [_camera setHeading:newHeading.magneticHeading];
+    }
 }
 
 /*
