@@ -44,11 +44,11 @@
     
     // Map Options
     [_mapView setDelegate:self];
-    [_mapView setZoomEnabled:YES];               // Disable Zoom
-    [_mapView setScrollEnabled:YES];             // Disable scrolling.
+    [_mapView setZoomEnabled:NO];               // Disable Zoom
+    [_mapView setScrollEnabled:NO];             // Disable scrolling.
     [_mapView setPitchEnabled:NO];              // Disable 3D view of the map.
-    [_mapView setRotateEnabled:YES];            // Enable map rotation.
-    [_mapView setUserInteractionEnabled:NO];    // Disable User Interaction
+    [_mapView setRotateEnabled:NO];            // Enable map rotation.
+    [_mapView setUserInteractionEnabled:YES];    // Disable User Interaction
     [_mapView setShowsUserLocation:YES];        // Show user on map
     
     _currentUserID = [NSString stringWithFormat:@"%@", [[PFUser currentUser] objectId]];

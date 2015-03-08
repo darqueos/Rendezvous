@@ -13,6 +13,8 @@
 
 @interface UsersTableViewController ()
 
+@property NSString *currentUserID;
+
 @end
 
 @implementation UsersTableViewController
@@ -26,9 +28,17 @@
     
     _users = [[NSMutableArray alloc]init];
     
-    [_users addObject:@{@"nome" : @"Aleph", @"foto" : @"aleph.jpg"}];
+    _currentUserID = [NSString stringWithFormat:@"%@", [[PFUser currentUser] objectId]];
+    
+    if (![_currentUserID isEqualToString:@"2hwTl1INIu"]) {
+            [_users addObject:@{@"nome" : @"Aleph", @"foto" : @"aleph.jpg"}];
+    }
+    
     [_users addObject:@{@"nome" : @"Caue", @"foto" : @"caue.jpg"}];
-    [_users addObject:@{@"nome" : @"Eduardo", @"foto" : @"eduardo.jpg"}];
+    
+    if (![_currentUserID isEqualToString:@"oEHf9XXQGq"]) {
+        [_users addObject:@{@"nome" : @"Eduardo", @"foto" : @"eduardo.jpg"}];
+    }
 
     if([PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]){
         FBRequest *request = [FBRequest requestForMe];
