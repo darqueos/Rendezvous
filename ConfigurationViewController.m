@@ -10,6 +10,7 @@
 #import <Parse/Parse.h>
 #import <ParseFacebookUtils/PFFacebookUtils.h>
 #import "FriendAnnotation.h"
+#import "SVPulsingAnnotationView.h"
 
 @interface ConfigurationViewController ()
 
@@ -43,15 +44,15 @@
     
     // Map Options
     [_mapView setDelegate:self];
-    [_mapView setZoomEnabled:NO];               // Disable Zoom
-    [_mapView setScrollEnabled:NO];             // Disable scrolling.
+    [_mapView setZoomEnabled:YES];               // Disable Zoom
+    [_mapView setScrollEnabled:YES];             // Disable scrolling.
     [_mapView setPitchEnabled:NO];              // Disable 3D view of the map.
     [_mapView setRotateEnabled:YES];            // Enable map rotation.
-    [_mapView setUserInteractionEnabled:NO];    // Disable User Interaction
+    [_mapView setUserInteractionEnabled:YES];    // Disable User Interaction
     [_mapView setShowsUserLocation:YES];        // Show user on map
     
     _currentUserID = [NSString stringWithFormat:@"%@", [[PFUser currentUser] objectId]];
-    _friendPin = [[FriendAnnotation alloc] initWithTitle:@"Friend Anotation" Location:CLLocationCoordinate2DMake(0, 0)];
+    _friendPin = [[FriendAnnotation alloc] initWithTitle:_userName Location:CLLocationCoordinate2DMake(0, 0)];
     
     [_mapView addAnnotation:_friendPin];
 }
@@ -69,7 +70,7 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     // Get user's current location
     CLLocationCoordinate2D loc  = [[locations lastObject] coordinate];
-    MKCoordinateRegion region   = MKCoordinateRegionMakeWithDistance(loc, 80, 80);
+    // MKCoordinateRegion region   = MKCoordinateRegionMakeWithDistance(loc, 80, 80);
     
     PFQuery *query2 = [PFQuery queryWithClassName:@"AppUser"];
     [query2 whereKey:@"uid" equalTo:_currentUserID];
@@ -90,7 +91,14 @@
 
                 [newPFUser save];
             } else {
-                [objects firstObject][@"location"] = [PFGeoPoint geoPointWithLatitude:loc.latitude longitude:loc.longitude];
+                PFObject *currentUserObject = [objects firstObject];
+                PFGeoPoint *currentUserObjectLocation = currentUserObject[@"location"];
+                
+                if (!((currentUserObjectLocation.latitude == loc.latitude) && (currentUserObjectLocation.longitude == loc.longitude))) {
+                    currentUserObject[@"location"] = [PFGeoPoint geoPointWithLatitude:loc.latitude longitude:loc.longitude];
+                    [currentUserObject save];
+                }
+
             }
             
         }
@@ -116,13 +124,15 @@
         }
     }];
     
-    [_mapView removeAnnotation:_friendPin];
-    
-    [_friendPin replaceThisCoordinate:CLLocationCoordinate2DMake(_friendLoc.latitude, _friendLoc.longitude)];
-    
-    [_mapView addAnnotation:_friendPin];
+    if (!((_friendLoc.latitude == _friendPin.coordinate.latitude) && (_friendLoc.longitude == _friendPin.coordinate.longitude))) {
+        [_mapView removeAnnotation:_friendPin];
+        
+        [_friendPin replaceThisCoordinate:CLLocationCoordinate2DMake(_friendLoc.latitude, _friendLoc.longitude)];
+        
+        [_mapView addAnnotation:_friendPin];
+    }
     // Set the initial region on map as user current location
-    [_mapView setRegion:region animated:NO];
+    //[_mapView setRegion:region animated:NO];
 }
 
 #pragma mark Updating Orientation
@@ -139,6 +149,26 @@
     } else {
         direction = newHeading.magneticHeading;
     }
+}
+
+
+// Set annotation view just like user current location icon, but green
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+    if([annotation isKindOfClass:[FriendAnnotation class]]) {
+        static NSString *identifier = @"FriendAnnotation";
+        
+        SVPulsingAnnotationView *pulsingView = (SVPulsingAnnotationView *)[_mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+        
+        if(pulsingView == nil) {
+            pulsingView = [[SVPulsingAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+            pulsingView.annotationColor = [UIColor colorWithRed:0 green:0.7 blue:0 alpha:1];
+        }
+        
+        pulsingView.canShowCallout = YES;
+        return pulsingView;
+    }
+    
+    return nil;
 }
 
 //- (void)updateMap:(CLLocation *) {}
