@@ -48,7 +48,7 @@
     [_mapView setScrollEnabled:YES];             // Disable scrolling.
     [_mapView setPitchEnabled:NO];              // Disable 3D view of the map.
     [_mapView setRotateEnabled:YES];            // Enable map rotation.
-    [_mapView setUserInteractionEnabled:YES];    // Disable User Interaction
+    [_mapView setUserInteractionEnabled:NO];    // Disable User Interaction
     [_mapView setShowsUserLocation:YES];        // Show user on map
     
     _currentUserID = [NSString stringWithFormat:@"%@", [[PFUser currentUser] objectId]];
@@ -70,7 +70,6 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     // Get user's current location
     CLLocationCoordinate2D loc  = [[locations lastObject] coordinate];
-    // MKCoordinateRegion region   = MKCoordinateRegionMakeWithDistance(loc, 80, 80);
     
     PFQuery *query2 = [PFQuery queryWithClassName:@"AppUser"];
     [query2 whereKey:@"uid" equalTo:_currentUserID];
@@ -131,8 +130,15 @@
         
         [_mapView addAnnotation:_friendPin];
     }
-    // Set the initial region on map as user current location
-    //[_mapView setRegion:region animated:NO];
+    
+    CLLocation *friendCLLocation = [[CLLocation alloc] initWithLatitude:_friendPin.coordinate.latitude longitude:_friendPin.coordinate.longitude];
+    CLLocation *userCLLocation = [[CLLocation alloc] initWithLatitude:loc.latitude longitude:loc.longitude];
+    float distance = [userCLLocation distanceFromLocation:friendCLLocation];
+    CLLocationCoordinate2D centerLocation = CLLocationCoordinate2DMake((loc.latitude + friendCLLocation.coordinate.latitude)/2, (loc.longitude + friendCLLocation.coordinate.longitude)/2);
+    
+    
+    MKCoordinateRegion region   = MKCoordinateRegionMakeWithDistance(centerLocation, distance*2, distance*2);
+    [_mapView setRegion:region animated:YES];
 }
 
 #pragma mark Updating Orientation
