@@ -81,7 +81,7 @@
                 newPFUser[@"uid"] = [[PFUser currentUser] objectId];
                 if ([_currentUserID isEqualToString:@"2hwTl1INIu"]) {
                     newPFUser[@"name"] = @"Aleph";
-                } else if ([_currentUserID isEqualToString:@"USER DO EDUARDO"]) {
+                } else if ([_currentUserID isEqualToString:@"oEHf9XXQGq"]) {
                     newPFUser[@"name"] = @"Eduardo";
                 } else {
                     newPFUser[@"name"] = @"Caue";
