@@ -83,7 +83,7 @@
                     newPFUser[@"name"] = @"Aleph";
                 } else if ([_currentUserID isEqualToString:@"oEHf9XXQGq"]) {
                     newPFUser[@"name"] = @"Eduardo";
-                } else {
+                } else { 
                     newPFUser[@"name"] = @"Caue";
                 }
                 newPFUser[@"location"] = [PFGeoPoint geoPointWithLatitude:loc.latitude longitude:loc.longitude];

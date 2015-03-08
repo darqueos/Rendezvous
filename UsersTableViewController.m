@@ -34,7 +34,9 @@
             [_users addObject:@{@"nome" : @"Aleph", @"foto" : @"aleph.jpg"}];
     }
     
-    [_users addObject:@{@"nome" : @"Caue", @"foto" : @"caue.jpg"}];
+    if (![_currentUserID isEqualToString:@"rD9jCPeTZM"]) {
+        [_users addObject:@{@"nome" : @"Caue", @"foto" : @"caue.jpg"}];
+    }
     
     if (![_currentUserID isEqualToString:@"oEHf9XXQGq"]) {
         [_users addObject:@{@"nome" : @"Eduardo", @"foto" : @"eduardo.jpg"}];
