@@ -17,4 +17,6 @@
 @property (retain, nonatomic) CLBeaconRegion *beaconRegion;
 @property (retain, nonatomic) CLLocationManager *locationManager;
 
+@property NSString *userName;
+
 @end

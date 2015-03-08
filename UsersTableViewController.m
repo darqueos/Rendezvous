@@ -7,6 +7,9 @@
 //
 
 #import "UsersTableViewController.h"
+#import "ConfigurationViewController.h"
+#import <Parse/Parse.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
 
 @interface UsersTableViewController ()
 
@@ -26,6 +29,33 @@
     [_users addObject:@{@"nome" : @"Aleph", @"foto" : @"aleph.jpg"}];
     [_users addObject:@{@"nome" : @"Caue", @"foto" : @"caue.jpg"}];
     [_users addObject:@{@"nome" : @"Eduardo", @"foto" : @"eduardo.jpg"}];
+
+    if([PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]){
+        FBRequest *request = [FBRequest requestForMe];
+        [request startWithCompletionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+            if (!error) {
+                // result is a dictionary with the user's Facebook data
+                NSDictionary *userData = (NSDictionary *)result;
+                NSString *name = userData[@"name"];
+                NSLog(@"%@", name);
+            }
+        }];
+    }
+    
+//    PFQuery *query = [PFQuery queryWithClassName:@"_User"];
+//    [query setLimit:20];
+//    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error){
+//        if (!error) {
+//            
+//            NSLog(@"Objects: %lu", objects.count);
+//            
+//            NSLog(@"%@", [objects firstObject]);
+//
+//        } else {
+//            NSLog(@"Error: %@ %@", error, [error userInfo]);
+//        }
+//    }];
+    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -67,6 +97,18 @@
     return cell;
 }
 
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+    
+    ConfigurationViewController *vc = [segue destinationViewController];
+    vc.userName = _users[_usersTableView.indexPathForSelectedRow.row][@"nome"];
+    
+}
+
 @end
 
 //==========================================================================================================================
@@ -105,14 +147,5 @@
 }
 */
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 

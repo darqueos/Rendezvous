@@ -7,8 +7,17 @@
 //
 
 #import "ConfigurationViewController.h"
+#import <Parse/Parse.h>
+#import <ParseFacebookUtils/PFFacebookUtils.h>
+#import "FriendAnnotation.h"
 
 @interface ConfigurationViewController ()
+
+@property PFObject *parseFriendUser;
+@property NSString *currentUserID;
+
+@property FriendAnnotation *friendPin;
+@property PFGeoPoint *friendLoc;
 
 @end
 
@@ -40,6 +49,11 @@
     [_mapView setRotateEnabled:YES];            // Enable map rotation.
     [_mapView setUserInteractionEnabled:NO];    // Disable User Interaction
     [_mapView setShowsUserLocation:YES];        // Show user on map
+    
+    _currentUserID = [NSString stringWithFormat:@"%@", [[PFUser currentUser] objectId]];
+    _friendPin = [[FriendAnnotation alloc] initWithTitle:@"Friend Anotation" Location:CLLocationCoordinate2DMake(0, 0)];
+    
+    [_mapView addAnnotation:_friendPin];
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -56,15 +70,59 @@
     // Get user's current location
     CLLocationCoordinate2D loc  = [[locations lastObject] coordinate];
     MKCoordinateRegion region   = MKCoordinateRegionMakeWithDistance(loc, 80, 80);
+    
+    PFQuery *query2 = [PFQuery queryWithClassName:@"AppUser"];
+    [query2 whereKey:@"uid" equalTo:_currentUserID];
+    [query2 findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
 
-    //    MKMapCamera *camera = [MKMapCamera cameraLookingAtCenterCoordinate:loc fromEyeCoordinate:<#(CLLocationCoordinate2D)#> eyeAltitude:<#(CLLocationDistance)#>;
+            if (objects.count < 1) {
+                PFObject *newPFUser = [PFObject objectWithClassName:@"AppUser"];
+                newPFUser[@"uid"] = [[PFUser currentUser] objectId];
+                if ([_currentUserID isEqualToString:@"2hwTl1INIu"]) {
+                    newPFUser[@"name"] = @"Aleph";
+                } else if ([_currentUserID isEqualToString:@"USER DO EDUARDO"]) {
+                    newPFUser[@"name"] = @"Eduardo";
+                } else {
+                    newPFUser[@"name"] = @"Caue";
+                }
+                newPFUser[@"location"] = [PFGeoPoint geoPointWithLatitude:loc.latitude longitude:loc.longitude];
 
+                [newPFUser save];
+            } else {
+                [objects firstObject][@"location"] = [PFGeoPoint geoPointWithLatitude:loc.latitude longitude:loc.longitude];
+            }
+            
+        }
+    }];
+    
+    
+    PFQuery *query = [PFQuery queryWithClassName:@"AppUser"];
+    [query whereKey:@"name" equalTo:_userName];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            
+            if (objects.count > 0) {
+                _parseFriendUser = objects.firstObject;
+                
+                _friendLoc = _parseFriendUser[@"location"];
+                
+            }
+            
+        } else {
+            // Log details of the failure
+            NSLog(@"Error: %@ %@", error, [error userInfo]);
+        
+        }
+    }];
+    
+    [_mapView removeAnnotation:_friendPin];
+    
+    [_friendPin replaceThisCoordinate:CLLocationCoordinate2DMake(_friendLoc.latitude, _friendLoc.longitude)];
+    
+    [_mapView addAnnotation:_friendPin];
     // Set the initial region on map as user current location
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        [_mapView setRegion:region animated:NO];
-//        [_mapView setCamera:camera];
-    });
+    [_mapView setRegion:region animated:NO];
 }
 
 #pragma mark Updating Orientation

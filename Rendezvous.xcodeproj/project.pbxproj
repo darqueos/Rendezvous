@@ -20,6 +20,7 @@
 		61EB2C461AA43B1A00ED5A1D /* RendezvousTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 61EB2C451AA43B1A00ED5A1D /* RendezvousTests.m */; };
 		8637DF4B1AA60646004920F7 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8637DF4A1AA60646004920F7 /* MapKit.framework */; };
 		8637DF4D1AA60650004920F7 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8637DF4C1AA60650004920F7 /* CoreLocation.framework */; };
+		864D13811AABF63B00E49C20 /* FriendAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 864D13801AABF63B00E49C20 /* FriendAnnotation.m */; };
 		865ED24F1AA7404F00AEFC28 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 865ED24E1AA7404F00AEFC28 /* Parse.framework */; };
 		865ED2511AA7405800AEFC28 /* ParseFacebookUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 865ED2501AA7405800AEFC28 /* ParseFacebookUtils.framework */; };
 		865ED2531AA7407800AEFC28 /* FacebookSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 865ED2521AA7407800AEFC28 /* FacebookSDK.framework */; };
@@ -33,6 +34,7 @@
 		865ED2631AA740B600AEFC28 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 865ED2621AA740B600AEFC28 /* SystemConfiguration.framework */; };
 		865ED2651AA740BF00AEFC28 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 865ED2641AA740BF00AEFC28 /* libz.dylib */; };
 		865ED2671AA7427700AEFC28 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 865ED2661AA7427700AEFC28 /* libsqlite3.dylib */; };
+		865ED26A1AA7454C00AEFC28 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 865ED2691AA7454C00AEFC28 /* LoginViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +68,8 @@
 		61EB2C451AA43B1A00ED5A1D /* RendezvousTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RendezvousTests.m; sourceTree = "<group>"; };
 		8637DF4A1AA60646004920F7 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		8637DF4C1AA60650004920F7 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		864D137F1AABF63B00E49C20 /* FriendAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FriendAnnotation.h; sourceTree = "<group>"; };
+		864D13801AABF63B00E49C20 /* FriendAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FriendAnnotation.m; sourceTree = "<group>"; };
 		865ED24E1AA7404F00AEFC28 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		865ED2501AA7405800AEFC28 /* ParseFacebookUtils.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtils.framework; sourceTree = "<group>"; };
 		865ED2521AA7407800AEFC28 /* FacebookSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FacebookSDK.framework; sourceTree = "<group>"; };
@@ -79,6 +83,8 @@
 		865ED2621AA740B600AEFC28 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		865ED2641AA740BF00AEFC28 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		865ED2661AA7427700AEFC28 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		865ED2681AA7454C00AEFC28 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		865ED2691AA7454C00AEFC28 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,10 +123,14 @@
 		0B32DC521AA5CD2100CE68AB /* View */ = {
 			isa = PBXGroup;
 			children = (
+				865ED2681AA7454C00AEFC28 /* LoginViewController.h */,
+				865ED2691AA7454C00AEFC28 /* LoginViewController.m */,
 				0B32DC4F1AA5CD0800CE68AB /* UsersTableViewController.h */,
 				0B32DC501AA5CD0800CE68AB /* UsersTableViewController.m */,
 				0B32DC531AA5D2E900CE68AB /* ConfigurationViewController.h */,
 				0B32DC541AA5D2E900CE68AB /* ConfigurationViewController.m */,
+				864D137F1AABF63B00E49C20 /* FriendAnnotation.h */,
+				864D13801AABF63B00E49C20 /* FriendAnnotation.m */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -314,8 +324,10 @@
 			files = (
 				61EB2C2F1AA43B1A00ED5A1D /* AppDelegate.m in Sources */,
 				0B32DC511AA5CD0800CE68AB /* UsersTableViewController.m in Sources */,
+				864D13811AABF63B00E49C20 /* FriendAnnotation.m in Sources */,
 				61EB2C2C1AA43B1A00ED5A1D /* main.m in Sources */,
 				0B32DC551AA5D2E900CE68AB /* ConfigurationViewController.m in Sources */,
+				865ED26A1AA7454C00AEFC28 /* LoginViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
