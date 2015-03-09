@@ -9,8 +9,9 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 #import <MapKit/MapKit.h>
+#import <CoreBluetooth/CoreBluetooth.h>
 
-@interface ConfigurationViewController : UIViewController <CLLocationManagerDelegate, MKMapViewDelegate>
+@interface ConfigurationViewController : UIViewController <CLLocationManagerDelegate, MKMapViewDelegate, CBPeripheralManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (retain, nonatomic) MKMapCamera *camera;

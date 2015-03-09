@@ -20,6 +20,8 @@
 @property FriendAnnotation *friendPin;
 @property PFGeoPoint *friendLoc;
 
+@property CBPeripheralManager *peripheralManager;
+
 @end
 
 @implementation ConfigurationViewController
@@ -50,7 +52,9 @@
     [_mapView setRotateEnabled:NO];            // Enable map rotation.
     [_mapView setUserInteractionEnabled:YES];    // Disable User Interaction
     [_mapView setShowsUserLocation:YES];        // Show user on map
-    
+
+    [self doBluetoothMagic];
+
     _currentUserID = [NSString stringWithFormat:@"%@", [[PFUser currentUser] objectId]];
     _friendPin = [[FriendAnnotation alloc] initWithTitle:_userName Location:CLLocationCoordinate2DMake(0, 0)];
     
@@ -70,7 +74,8 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     // Get user's current location
     CLLocationCoordinate2D loc  = [[locations lastObject] coordinate];
-    
+
+    // Update the current user's location.
     PFQuery *query2 = [PFQuery queryWithClassName:@"AppUser"];
     [query2 whereKey:@"uid" equalTo:_currentUserID];
     [query2 findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
@@ -92,51 +97,49 @@
             } else {
                 PFObject *currentUserObject = [objects firstObject];
                 PFGeoPoint *currentUserObjectLocation = currentUserObject[@"location"];
-                
+
                 if (!((currentUserObjectLocation.latitude == loc.latitude) && (currentUserObjectLocation.longitude == loc.longitude))) {
                     currentUserObject[@"location"] = [PFGeoPoint geoPointWithLatitude:loc.latitude longitude:loc.longitude];
                     [currentUserObject save];
                 }
-
             }
-            
         }
     }];
-    
-    
+
+    // Query for friend's location.
     PFQuery *query = [PFQuery queryWithClassName:@"AppUser"];
-    [query whereKey:@"name" equalTo:_userName];
+    [query whereKey:@"name" equalTo:_userName]; // _userName is nil?
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (!error) {
-            
+
             if (objects.count > 0) {
                 _parseFriendUser = objects.firstObject;
-                
                 _friendLoc = _parseFriendUser[@"location"];
-                
             }
-            
         } else {
-            // Log details of the failure
             NSLog(@"Error: %@ %@", error, [error userInfo]);
-        
         }
     }];
-    
+
+    // Check for updates on friend's coordinates.
+    // Then proceed to update it on the map.
     if (!((_friendLoc.latitude == _friendPin.coordinate.latitude) && (_friendLoc.longitude == _friendPin.coordinate.longitude))) {
         [_mapView removeAnnotation:_friendPin];
-        
         [_friendPin replaceThisCoordinate:CLLocationCoordinate2DMake(_friendLoc.latitude, _friendLoc.longitude)];
-        
         [_mapView addAnnotation:_friendPin];
     }
-    
+
+    // Get the distance between both users.
     CLLocation *friendCLLocation = [[CLLocation alloc] initWithLatitude:_friendPin.coordinate.latitude longitude:_friendPin.coordinate.longitude];
     CLLocation *userCLLocation = [[CLLocation alloc] initWithLatitude:loc.latitude longitude:loc.longitude];
     float distance = [userCLLocation distanceFromLocation:friendCLLocation];
+
+    if (distance < 50.0) {
+//        [self activateProximityRadar];
+    }
+
+    // Provide a new centre point between both users on the map.
     CLLocationCoordinate2D centerLocation = CLLocationCoordinate2DMake((loc.latitude + friendCLLocation.coordinate.latitude)/2, (loc.longitude + friendCLLocation.coordinate.longitude)/2);
-    
-    
     MKCoordinateRegion region   = MKCoordinateRegionMakeWithDistance(centerLocation, distance*2, distance*2);
     [_mapView setRegion:region animated:YES];
 }
@@ -157,6 +160,72 @@
     }
 }
 
+#pragma mark Updating iBeacon
+
+- (void)doBluetoothMagic {
+    // Bluetooth Magical One-Line Singleton Initializer (MOLSI!)
+    _peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
+
+    // "Y U BLUETOOTH NO ON?" alert.
+    if (_peripheralManager.state < CBPeripheralManagerStatePoweredOn) {
+        UIAlertView *errorAlert = [[UIAlertView alloc] initWithTitle:@"Bluetooth must be enabled" message:@"To configure your device as a beacon" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [errorAlert show];
+        return;
+    }
+
+    // Generate an UUID and update the database.
+    // This is provisory (and also wrong)(and duplicated code).
+    NSUUID *UUID = [NSUUID UUID];
+    PFQuery *query = [PFQuery queryWithClassName:@"AppUser"];
+    [query whereKey:@"uid" equalTo:_currentUserID];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+
+            if ([objects count] < 1) {
+                PFObject *newPFUser = [PFObject objectWithClassName:@"AppUser"];
+                newPFUser[@"uid"] = [[PFUser currentUser] objectId];
+
+                if ([_currentUserID isEqualToString:@"2hwTl1INIu"]) {
+                    newPFUser[@"name"] = @"Aleph";
+                } else if ([_currentUserID isEqualToString:@"oEHf9XXQGq"]) {
+                    newPFUser[@"name"] = @"Eduardo";
+                } else {
+                    newPFUser[@"name"] = @"Caue";
+                }
+
+                newPFUser[@"uuid"] = [UUID UUIDString];
+                [newPFUser save];
+            } else {
+                PFObject *currentUserObject = [objects firstObject];
+                currentUserObject[@"uuid"] = [UUID UUIDString];
+                [currentUserObject save];
+            }
+        }
+    }];
+
+    // "identifier" might lead us to a darker path...
+    CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:UUID identifier:@"br.com.MackMobile.Rendezvous"];
+    NSDictionary *peripheralData = [beaconRegion peripheralDataWithMeasuredPower:@-59];
+    [_peripheralManager startAdvertising:peripheralData];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region {
+    PFQuery *query = [PFQuery queryWithClassName:@"AppUser"];
+    [query whereKey:@"name" equalTo:_userName];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            if ([objects count] > 0) {
+                _parseFriendUser = [objects firstObject];
+                NSDate *date = _parseFriendUser.updatedAt;
+                NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                [formatter setDateFormat:@"dd/MM HH:mm:ss"];
+                NSLog(@"Date retrieved: %@", [formatter stringFromDate:date]);
+            }
+        } else {
+            NSLog(@"Error: %@ %@", error, [error userInfo]);
+        }
+    }];
+}
 
 // Set annotation view just like user current location icon, but green
 - (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {

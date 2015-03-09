@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Yfe-eJ-zo3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14D87h" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="Yfe-eJ-zo3">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
@@ -202,16 +202,16 @@
                                 <exclude reference="eoY-P2-GBv"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="Y3s-dL-5Au"/>
-                                <exclude reference="yR8-tu-tZl"/>
-                                <exclude reference="zTx-ZW-v5B"/>
+                                <exclude reference="OK4-Ki-hPF"/>
+                                <exclude reference="fQM-c5-Svv"/>
+                                <exclude reference="gs8-y3-Zae"/>
                                 <exclude reference="CUX-yx-ZSf"/>
                                 <exclude reference="Fcr-wf-DjO"/>
                                 <exclude reference="aUp-0b-hhv"/>
                                 <exclude reference="mAP-Yi-XeM"/>
-                                <exclude reference="OK4-Ki-hPF"/>
-                                <exclude reference="fQM-c5-Svv"/>
-                                <exclude reference="gs8-y3-Zae"/>
+                                <exclude reference="Y3s-dL-5Au"/>
+                                <exclude reference="yR8-tu-tZl"/>
+                                <exclude reference="zTx-ZW-v5B"/>
                                 <exclude reference="8aj-Jh-fie"/>
                                 <exclude reference="nQ1-rW-ZUZ"/>
                             </mask>
@@ -222,16 +222,16 @@
                                 <include reference="eoY-P2-GBv"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="Y3s-dL-5Au"/>
-                                <include reference="yR8-tu-tZl"/>
-                                <include reference="zTx-ZW-v5B"/>
+                                <include reference="OK4-Ki-hPF"/>
+                                <include reference="fQM-c5-Svv"/>
+                                <include reference="gs8-y3-Zae"/>
                                 <include reference="CUX-yx-ZSf"/>
                                 <include reference="Fcr-wf-DjO"/>
                                 <include reference="aUp-0b-hhv"/>
                                 <include reference="mAP-Yi-XeM"/>
-                                <include reference="OK4-Ki-hPF"/>
-                                <include reference="fQM-c5-Svv"/>
-                                <include reference="gs8-y3-Zae"/>
+                                <include reference="Y3s-dL-5Au"/>
+                                <include reference="yR8-tu-tZl"/>
+                                <include reference="zTx-ZW-v5B"/>
                                 <include reference="8aj-Jh-fie"/>
                                 <include reference="nQ1-rW-ZUZ"/>
                             </mask>
