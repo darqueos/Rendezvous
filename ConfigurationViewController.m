@@ -21,6 +21,7 @@
 @property PFGeoPoint *friendLoc;
 
 @property CBPeripheralManager *peripheralManager;
+@property NSUUID *UUID;
 
 @end
 
@@ -53,7 +54,12 @@
     [_mapView setUserInteractionEnabled:YES];    // Disable User Interaction
     [_mapView setShowsUserLocation:YES];        // Show user on map
 
-    [self doBluetoothMagic];
+    // Turns this device into an iBeacon transmitter!
+    if ([self wasIFirstToLogIn]) {
+        [self doBluetoothMagic];
+    } else {
+        [self monitorRegion];
+    }
 
     _currentUserID = [NSString stringWithFormat:@"%@", [[PFUser currentUser] objectId]];
     _friendPin = [[FriendAnnotation alloc] initWithTitle:_userName Location:CLLocationCoordinate2DMake(0, 0)];
@@ -74,8 +80,10 @@
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations {
     // Get user's current location
     CLLocationCoordinate2D loc  = [[locations lastObject] coordinate];
+    _UUID = [NSUUID UUID];
 
     // Update the current user's location.
+    // And the new user's UUID.
     PFQuery *query2 = [PFQuery queryWithClassName:@"AppUser"];
     [query2 whereKey:@"uid" equalTo:_currentUserID];
     [query2 findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
@@ -92,6 +100,7 @@
                     newPFUser[@"name"] = @"Caue";
                 }
                 newPFUser[@"location"] = [PFGeoPoint geoPointWithLatitude:loc.latitude longitude:loc.longitude];
+                newPFUser[@"uuid"] = [_UUID UUIDString];
 
                 [newPFUser save];
             } else {
@@ -100,6 +109,7 @@
 
                 if (!((currentUserObjectLocation.latitude == loc.latitude) && (currentUserObjectLocation.longitude == loc.longitude))) {
                     currentUserObject[@"location"] = [PFGeoPoint geoPointWithLatitude:loc.latitude longitude:loc.longitude];
+                    currentUserObject[@"uuid"] = [_UUID UUIDString];
                     [currentUserObject save];
                 }
             }
@@ -162,6 +172,56 @@
 
 #pragma mark Updating iBeacon
 
+- (BOOL)wasIFirstToLogIn {
+    __block NSDate *date = nil;
+    __block NSDate *myDate = nil;
+
+    // Retrive when was your friend's login.
+    PFQuery *query = [PFQuery queryWithClassName:@"AppUser"];
+    [query whereKey:@"name" equalTo:_userName];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+            if ([objects count] > 0) {
+                _parseFriendUser = [objects firstObject];
+                date = [_parseFriendUser updatedAt];
+
+                NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                [formatter setDateFormat:@"dd/MM HH:mm:ss"];
+                NSLog(@"Date retrieved: %@", [formatter stringFromDate:date]);
+            }
+        } else {
+            NSLog(@"Error: %@ %@", error, [error userInfo]);
+        }
+    }];
+
+    // Retrieve when was your login login.
+    PFQuery *query2 = [PFQuery queryWithClassName:@"AppUser"];
+    [query2 whereKey:@"uid" equalTo:_currentUserID];
+    [query2 findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (!error) {
+
+            if ([objects count] > 0) {
+                PFObject *currentUserObject = [objects firstObject];
+                myDate = [currentUserObject updatedAt];
+
+                NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+                [formatter setDateFormat:@"dd/MM HH:mm:ss"];
+                NSLog(@"Date retrieved: %@", [formatter stringFromDate:myDate]);
+            }
+        }
+    }];
+
+    if ([myDate compare:date] == NSOrderedAscending) {
+        return YES;
+    }
+
+    return NO;
+}
+
+- (void)monitorRegion {
+
+}
+
 - (void)doBluetoothMagic {
     // Bluetooth Magical One-Line Singleton Initializer (MOLSI!)
     _peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)];
@@ -173,58 +233,14 @@
         return;
     }
 
-    // Generate an UUID and update the database.
-    // This is provisory (and also wrong)(and duplicated code).
-    NSUUID *UUID = [NSUUID UUID];
-    PFQuery *query = [PFQuery queryWithClassName:@"AppUser"];
-    [query whereKey:@"uid" equalTo:_currentUserID];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        if (!error) {
-
-            if ([objects count] < 1) {
-                PFObject *newPFUser = [PFObject objectWithClassName:@"AppUser"];
-                newPFUser[@"uid"] = [[PFUser currentUser] objectId];
-
-                if ([_currentUserID isEqualToString:@"2hwTl1INIu"]) {
-                    newPFUser[@"name"] = @"Aleph";
-                } else if ([_currentUserID isEqualToString:@"oEHf9XXQGq"]) {
-                    newPFUser[@"name"] = @"Eduardo";
-                } else {
-                    newPFUser[@"name"] = @"Caue";
-                }
-
-                newPFUser[@"uuid"] = [UUID UUIDString];
-                [newPFUser save];
-            } else {
-                PFObject *currentUserObject = [objects firstObject];
-                currentUserObject[@"uuid"] = [UUID UUIDString];
-                [currentUserObject save];
-            }
-        }
-    }];
-
     // "identifier" might lead us to a darker path...
-    CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:UUID identifier:@"br.com.MackMobile.Rendezvous"];
+    CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:_UUID identifier:@"br.com.MackMobile.Rendezvous"];
     NSDictionary *peripheralData = [beaconRegion peripheralDataWithMeasuredPower:@-59];
     [_peripheralManager startAdvertising:peripheralData];
 }
 
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region {
-    PFQuery *query = [PFQuery queryWithClassName:@"AppUser"];
-    [query whereKey:@"name" equalTo:_userName];
-    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
-        if (!error) {
-            if ([objects count] > 0) {
-                _parseFriendUser = [objects firstObject];
-                NSDate *date = _parseFriendUser.updatedAt;
-                NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-                [formatter setDateFormat:@"dd/MM HH:mm:ss"];
-                NSLog(@"Date retrieved: %@", [formatter stringFromDate:date]);
-            }
-        } else {
-            NSLog(@"Error: %@ %@", error, [error userInfo]);
-        }
-    }];
+
 }
 
 // Set annotation view just like user current location icon, but green
